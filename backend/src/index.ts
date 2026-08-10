@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import budgetRoutes from "./routes/budgetRoutes";
+import reportRoutes from "./routes/reportRoutes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/auth", authRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/budgets", budgetRoutes);
+app.use("/reports", reportRoutes);
 
 const port = process.env.PORT || 4000;
 
