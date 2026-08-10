@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { createUser, findUserByEmail } from "../models/userModel";
+import { AppError } from "../utils/AppError";
+import { requireFields } from "../utils/validation";
 
 const SALT_ROUNDS = 10;
 
@@ -10,15 +12,12 @@ function signToken(userId: number): string {
 }
 
 export async function register(req: Request, res: Response) {
+  requireFields(req.body, ["name", "email", "password"]);
   const { name, email, password } = req.body;
-
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: "name, email, and password are required" });
-  }
 
   const existing = await findUserByEmail(email);
   if (existing) {
-    return res.status(409).json({ error: "Email is already registered" });
+    throw new AppError(409, "Email is already registered");
   }
 
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
@@ -32,20 +31,17 @@ export async function register(req: Request, res: Response) {
 }
 
 export async function login(req: Request, res: Response) {
+  requireFields(req.body, ["email", "password"]);
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "email and password are required" });
-  }
 
   const user = await findUserByEmail(email);
   if (!user) {
-    return res.status(401).json({ error: "Invalid email or password" });
+    throw new AppError(401, "Invalid email or password");
   }
 
   const valid = await bcrypt.compare(password, user.password_hash);
   if (!valid) {
-    return res.status(401).json({ error: "Invalid email or password" });
+    throw new AppError(401, "Invalid email or password");
   }
 
   const token = signToken(user.id);

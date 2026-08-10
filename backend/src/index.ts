@@ -6,6 +6,7 @@ import categoryRoutes from "./routes/categoryRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import budgetRoutes from "./routes/budgetRoutes";
 import reportRoutes from "./routes/reportRoutes";
+import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 
@@ -21,6 +22,9 @@ app.use("/categories", categoryRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/budgets", budgetRoutes);
 app.use("/reports", reportRoutes);
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 const port = process.env.PORT || 4000;
 

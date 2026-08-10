@@ -14,14 +14,6 @@ export interface BudgetWithProgress extends Budget {
   spent: string;
 }
 
-export function normalizeMonth(input: string): string {
-  const match = /^(\d{4})-(\d{2})/.exec(input);
-  if (!match) {
-    throw new Error("month must be in YYYY-MM or YYYY-MM-DD format");
-  }
-  return `${match[1]}-${match[2]}-01`;
-}
-
 export async function createBudget(
   userId: number,
   categoryId: number,

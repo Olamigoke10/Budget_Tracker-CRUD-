@@ -1,5 +1,7 @@
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth";
+import { AppError } from "../utils/AppError";
+import { requireFields, assertValidType } from "../utils/validation";
 import {
   createCategory,
   getCategoriesByUser,
@@ -8,21 +10,15 @@ import {
   deleteCategory,
 } from "../models/categoryModel";
 
-function isValidType(type: unknown): type is "income" | "expense" {
-  return type === "income" || type === "expense";
-}
-
 export async function listCategories(req: AuthRequest, res: Response) {
   const categories = await getCategoriesByUser(req.userId!);
   res.json(categories);
 }
 
 export async function createCategoryHandler(req: AuthRequest, res: Response) {
+  requireFields(req.body, ["name", "type"]);
   const { name, type } = req.body;
-
-  if (!name || !isValidType(type)) {
-    return res.status(400).json({ error: "name is required and type must be 'income' or 'expense'" });
-  }
+  assertValidType(type);
 
   const category = await createCategory(req.userId!, name, type);
   res.status(201).json(category);
@@ -30,15 +26,13 @@ export async function createCategoryHandler(req: AuthRequest, res: Response) {
 
 export async function updateCategoryHandler(req: AuthRequest, res: Response) {
   const id = Number(req.params.id);
+  requireFields(req.body, ["name", "type"]);
   const { name, type } = req.body;
-
-  if (!name || !isValidType(type)) {
-    return res.status(400).json({ error: "name is required and type must be 'income' or 'expense'" });
-  }
+  assertValidType(type);
 
   const existing = await getCategoryById(req.userId!, id);
   if (!existing) {
-    return res.status(404).json({ error: "Category not found" });
+    throw new AppError(404, "Category not found");
   }
 
   const category = await updateCategory(req.userId!, id, name, type);
@@ -50,7 +44,7 @@ export async function deleteCategoryHandler(req: AuthRequest, res: Response) {
 
   const existing = await getCategoryById(req.userId!, id);
   if (!existing) {
-    return res.status(404).json({ error: "Category not found" });
+    throw new AppError(404, "Category not found");
   }
 
   await deleteCategory(req.userId!, id);
