@@ -19,6 +19,7 @@ export function Layout() {
             Dashboard
           </NavLink>
           <NavLink to="/transactions">Transactions</NavLink>
+          <NavLink to="/categories">Categories</NavLink>
         </nav>
         <div className="app-user">
           <span>{user?.name}</span>
