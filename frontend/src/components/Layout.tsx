@@ -20,6 +20,7 @@ export function Layout() {
           </NavLink>
           <NavLink to="/transactions">Transactions</NavLink>
           <NavLink to="/categories">Categories</NavLink>
+          <NavLink to="/budgets">Budgets</NavLink>
         </nav>
         <div className="app-user">
           <span>{user?.name}</span>

@@ -471,3 +471,22 @@ code {
   border-color: #dc2626;
   color: #dc2626;
 }
+
+.budget-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.budget-actions {
+  margin-top: 10px;
+}
+
+.filters input[type="month"] {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+}
